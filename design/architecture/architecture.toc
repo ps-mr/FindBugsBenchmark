@@ -1,0 +1,32 @@
+\contentsline {section}{\numberline {1}Walkthrough}{1}{section.1}
+\contentsline {subsection}{\numberline {1.1}The FindBugs class}{1}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Configuring the FindBugs object}{2}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}FindBugs.execute()}{2}{subsection.1.3}
+\contentsline {subsubsection}{\numberline {1.3.1}The Analysis Context}{2}{subsubsection.1.3.1}
+\contentsline {subsubsection}{\numberline {1.3.2}Analysis Features and Training Databases}{3}{subsubsection.1.3.2}
+\contentsline {subsubsection}{\numberline {1.3.3}Execution Plan}{3}{subsubsection.1.3.3}
+\contentsline {subsubsection}{\numberline {1.3.4}Scanning for Application Classes}{3}{subsubsection.1.3.4}
+\contentsline {subsubsection}{\numberline {1.3.5}Performing the Analysis}{4}{subsubsection.1.3.5}
+\contentsline {subsubsection}{\numberline {1.3.6}Finishing Up}{4}{subsubsection.1.3.6}
+\contentsline {section}{\numberline {2}Bug Detectors}{4}{section.2}
+\contentsline {subsection}{\numberline {2.1}Visitor-Based Detectors}{5}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}CFG-Based Detectors}{6}{subsection.2.2}
+\contentsline {section}{\numberline {3}The Bytecode Analysis (BA) Package}{7}{section.3}
+\contentsline {subsection}{\numberline {3.1}AnalysisContext and ClassContext}{7}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Control Flow Graphs}{8}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Dataflow Analysis}{9}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Dataflow and DataflowAnalysis}{9}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}Frame, FrameDataflowAnalysis, and AbstractFrameModelingVisitor}{10}{subsubsection.3.3.2}
+\contentsline {subsubsection}{\numberline {3.3.3}Using the Results of a Dataflow Analysis}{10}{subsubsection.3.3.3}
+\contentsline {subsubsection}{\numberline {3.3.4}TypeAnalysis and TypeDataflow}{10}{subsubsection.3.3.4}
+\contentsline {subsubsection}{\numberline {3.3.5}ValueNumberAnalysis and ValueNumberDataflow}{11}{subsubsection.3.3.5}
+\contentsline {subsubsection}{\numberline {3.3.6}IsNullValueAnalysis and IsNullValueDataflow}{11}{subsubsection.3.3.6}
+\contentsline {subsubsection}{\numberline {3.3.7}LockAnalysis and LockDataflow}{12}{subsubsection.3.3.7}
+\contentsline {subsection}{\numberline {3.4}Class Hierarchy Queries and Missing Classes/Interfaces}{12}{subsection.3.4}
+\contentsline {section}{\numberline {4}The Warning Object Model}{13}{section.4}
+\contentsline {subsection}{\numberline {4.1}BugInstance}{13}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}BugPatterns}{13}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}BugAnnotation}{13}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}I18N}{14}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}BugCollection}{14}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}Reading and Writing XML}{15}{subsection.4.6}
