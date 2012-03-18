@@ -117,7 +117,7 @@ public class Profiler implements XMLWriteable {
         final AtomicLong totalSquareMicroseconds = new AtomicLong();
 
         private final String className;
-        
+
         Object maxContext;
 
         /**
@@ -162,7 +162,7 @@ public class Profiler implements XMLWriteable {
             long averageSquareMicros = totalSquareMicros / callCount;
             long timeVariance = averageSquareMicros - averageTimeMicros * averageTimeMicros;
             long timeStandardDeviation = (long) Math.sqrt(timeVariance);
-            if (timeMillis > 10) {
+            if (timeMillis > 1) { // ME
                 xmlOutput.startTag("ClassProfile");
 
                 xmlOutput.addAttribute("name", className);
@@ -203,13 +203,13 @@ public class Profiler implements XMLWriteable {
     final Stack<Clock> startTimes;
 
     final ConcurrentHashMap<Class<?>, Profile> profile;
-    
+
     final Stack<Object> context = new Stack<Object>();
-    
+
     public void startContext(Object context) {
         this.context.push(context);
     }
-    
+
     public void endContext(Object context) {
         Object o = this.context.pop();
         assert o == context;
@@ -360,7 +360,10 @@ public class Profiler implements XMLWriteable {
         if (!REPORT) {
             return;
         }
-        report(new TotalTimeComparator(this), new FilterByTime(10000000), System.err);
+        report(
+        		new TotalTimeComparator(this),
+        		new FilterByTime(1000), // ME changed to 1000 (nanoseconds; i.e. one mirosecond) instead of 10000000
+        		System.err);
     }
 
     /**
