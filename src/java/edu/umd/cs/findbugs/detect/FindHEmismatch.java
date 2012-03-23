@@ -156,146 +156,146 @@ public class FindHEmismatch extends OpcodeStackDetector implements StatelessDete
                     inheritedHashCodeIsFinal = true;
             }
         }
-        boolean usesDefaultHashCode = whereHashCode.equals("java.lang.Object");
-        if (false && (usesDefaultEquals || usesDefaultHashCode)) {
-            try {
-                if (Repository.implementationOf(obj, "java/util/Set") || Repository.implementationOf(obj, "java/util/List")
-                        || Repository.implementationOf(obj, "java/util/Map")) {
-                    // System.out.println(getDottedClassName() + " uses default
-                    // hashCode or equals");
-                }
-            } catch (ClassNotFoundException e) {
-                // e.printStackTrace();
-            }
-        }
-
-        if (!hasEqualsObject && !hasEqualsSelf && hasEqualsOther) {
-            BugInstance bug = new BugInstance(this, usesDefaultEquals ? "EQ_OTHER_USE_OBJECT" : "EQ_OTHER_NO_OBJECT",
-                    NORMAL_PRIORITY).addClass(this).addMethod(equalsOtherMethod).addClass(equalsOtherClass);
-            bugReporter.reportBug(bug);
-        }
-        if (!hasEqualsObject && hasEqualsSelf) {
-
-            if (usesDefaultEquals) {
-                int priority = HIGH_PRIORITY;
-                if (usesDefaultHashCode || obj.isAbstract())
-                    priority++;
-                if (!visibleOutsidePackage)
-                    priority++;
-                String bugPattern = "EQ_SELF_USE_OBJECT";
-
-                BugInstance bug = new BugInstance(this, bugPattern, priority).addClass(getDottedClassName());
-                if (equalsMethod != null)
-                    bug.addMethod(equalsMethod);
-                bugReporter.reportBug(bug);
-            } else {
-                int priority = NORMAL_PRIORITY;
-                if (hasFields)
-                    priority--;
-                if (obj.isAbstract())
-                    priority++;
-                String bugPattern = "EQ_SELF_NO_OBJECT";
-                String superclassName = obj.getSuperclassName();
-                if (superclassName.equals("java.lang.Enum")) {
-                    bugPattern = "EQ_DONT_DEFINE_EQUALS_FOR_ENUM";
-                    priority = HIGH_PRIORITY;
-                }
-                BugInstance bug = new BugInstance(this, bugPattern, priority).addClass(getDottedClassName());
-                if (equalsMethod != null)
-                    bug.addMethod(equalsMethod);
-                bugReporter.reportBug(bug);
-            }
-        }
-
-        // System.out.println("Class " + getDottedClassName());
-        // System.out.println("usesDefaultEquals: " + usesDefaultEquals);
-        // System.out.println("hasHashCode: : " + hasHashCode);
-        // System.out.println("usesDefaultHashCode: " + usesDefaultHashCode);
-        // System.out.println("hasEquals: : " + hasEqualsObject);
-        // System.out.println("hasCompareToObject: : " + hasCompareToObject);
-        // System.out.println("hasCompareToSelf: : " + hasCompareToSelf);
-
-        if ((hasCompareToObject || hasCompareToSelf) && usesDefaultEquals) {
-            BugInstance bug = new BugInstance(this, "EQ_COMPARETO_USE_OBJECT_EQUALS", obj.isAbstract() ? Priorities.LOW_PRIORITY
-                    : Priorities.NORMAL_PRIORITY).addClass(this);
-            if (compareToSelfMethod != null)
-                bug.addMethod(compareToSelfMethod);
-            else
-                bug.addMethod(compareToObjectMethod);
-            bugReporter.reportBug(bug);
-        }
-        if (!hasCompareToObject && !hasCompareToBridgeMethod && hasCompareToSelf) {
-            if (!extendsObject)
-                bugReporter.reportBug(new BugInstance(this, "CO_SELF_NO_OBJECT", NORMAL_PRIORITY).addClass(getDottedClassName())
-                        .addMethod(compareToMethod));
-        }
-
-        // if (!hasFields) return;
-        if (hasHashCode && !hashCodeIsAbstract && !(hasEqualsObject && !equalsReimplementesObjectEquals || hasEqualsSelf)) {
-            int priority = LOW_PRIORITY;
-            if (usesDefaultEquals)
-                bugReporter.reportBug(new BugInstance(this, "HE_HASHCODE_USE_OBJECT_EQUALS", priority).addClass(
-                        getDottedClassName()).addMethod(hashCodeMethod));
-            else if (!inheritedEqualsIsFinal)
-                bugReporter.reportBug(new BugInstance(this, "HE_HASHCODE_NO_EQUALS", priority).addClass(getDottedClassName())
-                        .addMethod(hashCodeMethod));
-        }
-        if (equalsObjectIsAbstract) {
-            // no errors reported
-        } else if (!hasHashCode && (hasEqualsObject || hasEqualsSelf)) {
-            EqualsKindSummary.KindOfEquals equalsKind = AnalysisContext.currentAnalysisContext().getEqualsKindSummary()
-                    .get(new ClassAnnotation(obj.getClassName()));
-            if (equalsKind == EqualsKindSummary.KindOfEquals.ALWAYS_FALSE)
-                return;
-            if (usesDefaultHashCode) {
-                int priority = HIGH_PRIORITY;
-                if (equalsMethodIsInstanceOfEquals)
-                    priority += 2;
-                else if (obj.isAbstract() || !hasEqualsObject)
-                    priority++;
-                if (priority == HIGH_PRIORITY)
-                    nonHashableClasses.add(getDottedClassName());
-                if (!visibleOutsidePackage) {
-                    priority++;
-                }
-                BugInstance bug = new BugInstance(this, "HE_EQUALS_USE_HASHCODE", priority).addClass(getDottedClassName());
-                if (equalsMethod != null)
-                    bug.addMethod(equalsMethod);
-                bugReporter.reportBug(bug);
-            } else if (!inheritedHashCodeIsFinal && !whereHashCode.startsWith("java.util.Abstract")) {
-                int priority = LOW_PRIORITY;
-
-                if (hasEqualsObject && inheritedEqualsIsAbstract)
-                    priority++;
-                if (hasFields)
-                    priority--;
-                if (equalsMethodIsInstanceOfEquals || !hasEqualsObject)
-                    priority += 2;
-                else if (obj.isAbstract())
-                    priority++;
-                BugInstance bug = new BugInstance(this, "HE_EQUALS_NO_HASHCODE", priority).addClass(getDottedClassName());
-                if (equalsMethod != null)
-                    bug.addMethod(equalsMethod);
-                bugReporter.reportBug(bug);
-            }
-        }
-        if (!hasHashCode && !hasEqualsObject && !hasEqualsSelf && !usesDefaultEquals && usesDefaultHashCode && !obj.isAbstract()
-                && inheritedEqualsFromAbstractClass) {
-            BugInstance bug = new BugInstance(this, "HE_INHERITS_EQUALS_USE_HASHCODE", NORMAL_PRIORITY)
-                    .addClass(getDottedClassName());
-            if (equalsMethod != null)
-                bug.addMethod(equalsMethod);
-            bugReporter.reportBug(bug);
-        }
-        if (!hasEqualsObject && !hasEqualsSelf && !usesDefaultEquals && !obj.isAbstract() && hasFields && inheritedEquals != null
-                && !inheritedEqualsIsFinal && !inheritedEqualsFromAbstractClass
-                && !inheritedEquals.getClassDescriptor().getSimpleName().contains("Abstract")
-                && !inheritedEquals.getClassDescriptor().getClassName().equals("java/lang/Enum")) {
-
-            BugInstance bug = new BugInstance(this, "EQ_DOESNT_OVERRIDE_EQUALS", NORMAL_PRIORITY).addClass(this)
-                    .addMethod(inheritedEquals).describe(MethodAnnotation.METHOD_DID_YOU_MEAN_TO_OVERRIDE);
-            bugReporter.reportBug(bug);
-        }
+//        boolean usesDefaultHashCode = whereHashCode.equals("java.lang.Object");
+//        if (false && (usesDefaultEquals || usesDefaultHashCode)) {
+//            try {
+//                if (Repository.implementationOf(obj, "java/util/Set") || Repository.implementationOf(obj, "java/util/List")
+//                        || Repository.implementationOf(obj, "java/util/Map")) {
+//                    // System.out.println(getDottedClassName() + " uses default
+//                    // hashCode or equals");
+//                }
+//            } catch (ClassNotFoundException e) {
+//                // e.printStackTrace();
+//            }
+//        }
+//
+//        if (!hasEqualsObject && !hasEqualsSelf && hasEqualsOther) {
+//            BugInstance bug = new BugInstance(this, usesDefaultEquals ? "EQ_OTHER_USE_OBJECT" : "EQ_OTHER_NO_OBJECT",
+//                    NORMAL_PRIORITY).addClass(this).addMethod(equalsOtherMethod).addClass(equalsOtherClass);
+//            bugReporter.reportBug(bug);
+//        }
+//        if (!hasEqualsObject && hasEqualsSelf) {
+//
+//            if (usesDefaultEquals) {
+//                int priority = HIGH_PRIORITY;
+//                if (usesDefaultHashCode || obj.isAbstract())
+//                    priority++;
+//                if (!visibleOutsidePackage)
+//                    priority++;
+//                String bugPattern = "EQ_SELF_USE_OBJECT";
+//
+//                BugInstance bug = new BugInstance(this, bugPattern, priority).addClass(getDottedClassName());
+//                if (equalsMethod != null)
+//                    bug.addMethod(equalsMethod);
+//                bugReporter.reportBug(bug);
+//            } else {
+//                int priority = NORMAL_PRIORITY;
+//                if (hasFields)
+//                    priority--;
+//                if (obj.isAbstract())
+//                    priority++;
+//                String bugPattern = "EQ_SELF_NO_OBJECT";
+//                String superclassName = obj.getSuperclassName();
+//                if (superclassName.equals("java.lang.Enum")) {
+//                    bugPattern = "EQ_DONT_DEFINE_EQUALS_FOR_ENUM";
+//                    priority = HIGH_PRIORITY;
+//                }
+//                BugInstance bug = new BugInstance(this, bugPattern, priority).addClass(getDottedClassName());
+//                if (equalsMethod != null)
+//                    bug.addMethod(equalsMethod);
+//                bugReporter.reportBug(bug);
+//            }
+//        }
+//
+//        // System.out.println("Class " + getDottedClassName());
+//        // System.out.println("usesDefaultEquals: " + usesDefaultEquals);
+//        // System.out.println("hasHashCode: : " + hasHashCode);
+//        // System.out.println("usesDefaultHashCode: " + usesDefaultHashCode);
+//        // System.out.println("hasEquals: : " + hasEqualsObject);
+//        // System.out.println("hasCompareToObject: : " + hasCompareToObject);
+//        // System.out.println("hasCompareToSelf: : " + hasCompareToSelf);
+//
+//        if ((hasCompareToObject || hasCompareToSelf) && usesDefaultEquals) {
+//            BugInstance bug = new BugInstance(this, "EQ_COMPARETO_USE_OBJECT_EQUALS", obj.isAbstract() ? Priorities.LOW_PRIORITY
+//                    : Priorities.NORMAL_PRIORITY).addClass(this);
+//            if (compareToSelfMethod != null)
+//                bug.addMethod(compareToSelfMethod);
+//            else
+//                bug.addMethod(compareToObjectMethod);
+//            bugReporter.reportBug(bug);
+//        }
+//        if (!hasCompareToObject && !hasCompareToBridgeMethod && hasCompareToSelf) {
+//            if (!extendsObject)
+//                bugReporter.reportBug(new BugInstance(this, "CO_SELF_NO_OBJECT", NORMAL_PRIORITY).addClass(getDottedClassName())
+//                        .addMethod(compareToMethod));
+//        }
+//
+//        // if (!hasFields) return;
+//        if (hasHashCode && !hashCodeIsAbstract && !(hasEqualsObject && !equalsReimplementesObjectEquals || hasEqualsSelf)) {
+//            int priority = LOW_PRIORITY;
+//            if (usesDefaultEquals)
+//                bugReporter.reportBug(new BugInstance(this, "HE_HASHCODE_USE_OBJECT_EQUALS", priority).addClass(
+//                        getDottedClassName()).addMethod(hashCodeMethod));
+//            else if (!inheritedEqualsIsFinal)
+//                bugReporter.reportBug(new BugInstance(this, "HE_HASHCODE_NO_EQUALS", priority).addClass(getDottedClassName())
+//                        .addMethod(hashCodeMethod));
+//        }
+//        if (equalsObjectIsAbstract) {
+//            // no errors reported
+//        } else if (!hasHashCode && (hasEqualsObject || hasEqualsSelf)) {
+//            EqualsKindSummary.KindOfEquals equalsKind = AnalysisContext.currentAnalysisContext().getEqualsKindSummary()
+//                    .get(new ClassAnnotation(obj.getClassName()));
+//            if (equalsKind == EqualsKindSummary.KindOfEquals.ALWAYS_FALSE)
+//                return;
+//            if (usesDefaultHashCode) {
+//                int priority = HIGH_PRIORITY;
+//                if (equalsMethodIsInstanceOfEquals)
+//                    priority += 2;
+//                else if (obj.isAbstract() || !hasEqualsObject)
+//                    priority++;
+//                if (priority == HIGH_PRIORITY)
+//                    nonHashableClasses.add(getDottedClassName());
+//                if (!visibleOutsidePackage) {
+//                    priority++;
+//                }
+//                BugInstance bug = new BugInstance(this, "HE_EQUALS_USE_HASHCODE", priority).addClass(getDottedClassName());
+//                if (equalsMethod != null)
+//                    bug.addMethod(equalsMethod);
+//                bugReporter.reportBug(bug);
+//            } else if (!inheritedHashCodeIsFinal && !whereHashCode.startsWith("java.util.Abstract")) {
+//                int priority = LOW_PRIORITY;
+//
+//                if (hasEqualsObject && inheritedEqualsIsAbstract)
+//                    priority++;
+//                if (hasFields)
+//                    priority--;
+//                if (equalsMethodIsInstanceOfEquals || !hasEqualsObject)
+//                    priority += 2;
+//                else if (obj.isAbstract())
+//                    priority++;
+//                BugInstance bug = new BugInstance(this, "HE_EQUALS_NO_HASHCODE", priority).addClass(getDottedClassName());
+//                if (equalsMethod != null)
+//                    bug.addMethod(equalsMethod);
+//                bugReporter.reportBug(bug);
+//            }
+//        }
+//        if (!hasHashCode && !hasEqualsObject && !hasEqualsSelf && !usesDefaultEquals && usesDefaultHashCode && !obj.isAbstract()
+//                && inheritedEqualsFromAbstractClass) {
+//            BugInstance bug = new BugInstance(this, "HE_INHERITS_EQUALS_USE_HASHCODE", NORMAL_PRIORITY)
+//                    .addClass(getDottedClassName());
+//            if (equalsMethod != null)
+//                bug.addMethod(equalsMethod);
+//            bugReporter.reportBug(bug);
+//        }
+//        if (!hasEqualsObject && !hasEqualsSelf && !usesDefaultEquals && !obj.isAbstract() && hasFields && inheritedEquals != null
+//                && !inheritedEqualsIsFinal && !inheritedEqualsFromAbstractClass
+//                && !inheritedEquals.getClassDescriptor().getSimpleName().contains("Abstract")
+//                && !inheritedEquals.getClassDescriptor().getClassName().equals("java/lang/Enum")) {
+//
+//            BugInstance bug = new BugInstance(this, "EQ_DOESNT_OVERRIDE_EQUALS", NORMAL_PRIORITY).addClass(this)
+//                    .addMethod(inheritedEquals).describe(MethodAnnotation.METHOD_DID_YOU_MEAN_TO_OVERRIDE);
+//            bugReporter.reportBug(bug);
+//        }
     }
 
     @Override
@@ -321,7 +321,7 @@ public class FindHEmismatch extends OpcodeStackDetector implements StatelessDete
         equalsOtherClass = null;
         isApplicationClass = AnalysisContext.currentAnalysisContext().isApplicationClass(obj);
     }
-    
+
     @Override
     public boolean shouldVisitCode(Code obj) {
         if (isApplicationClass)
@@ -330,7 +330,7 @@ public class FindHEmismatch extends OpcodeStackDetector implements StatelessDete
         if (name.equals("hashCode") || name.equals("equals"))
             return true;
         return false;
-        
+
     }
     boolean isApplicationClass;
 
@@ -361,11 +361,12 @@ public class FindHEmismatch extends OpcodeStackDetector implements StatelessDete
             if (name.equals("equals") && sig.equals("(L" + getClassName() + ";)Z")) {
                 bugReporter.reportBug(new BugInstance(this, "EQ_ABSTRACT_SELF", LOW_PRIORITY).addClass(getDottedClassName()));
                 return;
-            } else if (name.equals("compareTo") && sig.equals("(L" + getClassName() + ";)I")) {
+            } /* else if (name.equals("compareTo") && sig.equals("(L" + getClassName() + ";)I")) {
                 bugReporter.reportBug(new BugInstance(this, "CO_ABSTRACT_SELF", LOW_PRIORITY).addClass(getDottedClassName()));
                 return;
-            }
+            }*/
         }
+        /*
         boolean sigIsObject = sig.equals("(Ljava/lang/Object;)Z");
         if (name.equals("hashCode") && sig.equals("()I")) {
             hasHashCode = true;
@@ -443,6 +444,7 @@ public class FindHEmismatch extends OpcodeStackDetector implements StatelessDete
                 compareToSelfMethod = compareToMethod = tmp;
             }
         }
+        */
     }
 
     Method findMethod(JavaClass clazz, String name, String sig) {
@@ -455,65 +457,65 @@ public class FindHEmismatch extends OpcodeStackDetector implements StatelessDete
 
     @Override
     public void sawOpcode(int seen) {
-        if (seen == INVOKEVIRTUAL || seen == INVOKEINTERFACE) {
-            String className = getClassConstantOperand();
-            if (className.equals("java/util/Map") || className.equals("java/util/HashMap")
-                    || className.equals("java/util/LinkedHashMap") || className.equals("java/util/concurrent/ConcurrentHashMap")
-                    || className.contains("Hash")
-                    && Subtypes2.instanceOf(ClassName.toDottedClassName(className), "java.util.Map")) {
-                if (getNameConstantOperand().equals("put")
-                        && getSigConstantOperand().equals("(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
-                        && stack.getStackDepth() >= 3)
-                    check(1);
-                else if ((getNameConstantOperand().equals("get") || getNameConstantOperand().equals("remove"))
-                        && getSigConstantOperand().startsWith("(Ljava/lang/Object;)") && stack.getStackDepth() >= 2)
-                    check(0);
-            } else if (className.equals("java/util/Set") || className.equals("java/util/HashSet") || className.contains("Hash")
-                    && Subtypes2.instanceOf(ClassName.toDottedClassName(className), "java.util.Set")) {
-                if (getNameConstantOperand().equals("add") || getNameConstantOperand().equals("contains")
-                        || getNameConstantOperand().equals("remove") && getSigConstantOperand().equals("(Ljava/lang/Object;)Z")
-                        && stack.getStackDepth() >= 2)
-                    check(0);
-            }
-        }
+//        if (seen == INVOKEVIRTUAL || seen == INVOKEINTERFACE) {
+//            String className = getClassConstantOperand();
+//            if (className.equals("java/util/Map") || className.equals("java/util/HashMap")
+//                    || className.equals("java/util/LinkedHashMap") || className.equals("java/util/concurrent/ConcurrentHashMap")
+//                    || className.contains("Hash")
+//                    && Subtypes2.instanceOf(ClassName.toDottedClassName(className), "java.util.Map")) {
+//                if (getNameConstantOperand().equals("put")
+//                        && getSigConstantOperand().equals("(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
+//                        && stack.getStackDepth() >= 3)
+//                    check(1);
+//                else if ((getNameConstantOperand().equals("get") || getNameConstantOperand().equals("remove"))
+//                        && getSigConstantOperand().startsWith("(Ljava/lang/Object;)") && stack.getStackDepth() >= 2)
+//                    check(0);
+//            } else if (className.equals("java/util/Set") || className.equals("java/util/HashSet") || className.contains("Hash")
+//                    && Subtypes2.instanceOf(ClassName.toDottedClassName(className), "java.util.Set")) {
+//                if (getNameConstantOperand().equals("add") || getNameConstantOperand().equals("contains")
+//                        || getNameConstantOperand().equals("remove") && getSigConstantOperand().equals("(Ljava/lang/Object;)Z")
+//                        && stack.getStackDepth() >= 2)
+//                    check(0);
+//            }
+//        }
     }
 
-    private void check(int pos) {
-        OpcodeStack.Item item = stack.getStackItem(pos);
-        JavaClass type = null;
-
-        try {
-            type = item.getJavaClass();
-        } catch (ClassNotFoundException e) {
-            AnalysisContext.reportMissingClass(e);
-        }
-        if (type == null)
-            return;
-        String typeName = type.getClassName();
-        if (typeName.startsWith("java.lang"))
-            return;
-        int priority = NORMAL_PRIORITY;
-
-        OpcodeStack.Item collection = stack.getStackItem(PreorderVisitor.getNumberArguments(getSigConstantOperand()));
-        String collectionSignature = collection.getSignature();
-        if (collectionSignature.indexOf("Tree") >= 0
-                || collectionSignature.indexOf("Sorted") >= 0
-                || collectionSignature.indexOf("SkipList") >= 0 )
-            return;
-
-        if (collectionSignature.indexOf("Hash") >= 0)
-            priority--;
-        if (!AnalysisContext.currentAnalysisContext()/* .getSubtypes() */.isApplicationClass(type))
-            priority++;
-
-        if (type.isAbstract() || type.isInterface())
-            priority++;
-        potentialBugs.put(
-                type.getClassName(),
-                new BugInstance(this, "HE_USE_OF_UNHASHABLE_CLASS", priority).addClassAndMethod(this)
-                        .addTypeOfNamedClass(type.getClassName()).describe(TypeAnnotation.UNHASHABLE_ROLE).addCalledMethod(this)
-                        .addSourceLine(this));
-    }
+//    private void check(int pos) {
+//        OpcodeStack.Item item = stack.getStackItem(pos);
+//        JavaClass type = null;
+//
+//        try {
+//            type = item.getJavaClass();
+//        } catch (ClassNotFoundException e) {
+//            AnalysisContext.reportMissingClass(e);
+//        }
+//        if (type == null)
+//            return;
+//        String typeName = type.getClassName();
+//        if (typeName.startsWith("java.lang"))
+//            return;
+//        int priority = NORMAL_PRIORITY;
+//
+//        OpcodeStack.Item collection = stack.getStackItem(PreorderVisitor.getNumberArguments(getSigConstantOperand()));
+//        String collectionSignature = collection.getSignature();
+//        if (collectionSignature.indexOf("Tree") >= 0
+//                || collectionSignature.indexOf("Sorted") >= 0
+//                || collectionSignature.indexOf("SkipList") >= 0 )
+//            return;
+//
+//        if (collectionSignature.indexOf("Hash") >= 0)
+//            priority--;
+//        if (!AnalysisContext.currentAnalysisContext()/* .getSubtypes() */.isApplicationClass(type))
+//            priority++;
+//
+//        if (type.isAbstract() || type.isInterface())
+//            priority++;
+//        potentialBugs.put(
+//                type.getClassName(),
+//                new BugInstance(this, "HE_USE_OF_UNHASHABLE_CLASS", priority).addClassAndMethod(this)
+//                        .addTypeOfNamedClass(type.getClassName()).describe(TypeAnnotation.UNHASHABLE_ROLE).addCalledMethod(this)
+//                        .addSourceLine(this));
+//    }
 
     static final Pattern mapPattern = Pattern.compile("[^y]HashMap<L([^;<]*);");
 

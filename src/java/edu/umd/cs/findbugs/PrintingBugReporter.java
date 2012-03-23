@@ -210,11 +210,11 @@ public class PrintingBugReporter extends TextUIBugReporter {
                             if (storedException == null)
                                 storedException = e;
                         }
-                    } else if (rank <= commandLine.summarizeMaxRank) {
+                    } else if (rank <= commandLine.summarizeMaxRank) {                  
                         lowRank.add(pattern.getCategory());
                     }
-
-                }
+                   
+                } 
 
             reporter.finish();
             for (Map.Entry<String, Integer> e : lowRank.entrySet()) {

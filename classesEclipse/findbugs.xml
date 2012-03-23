@@ -1,10 +1,10 @@
 <FindbugsPlugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:noNamespaceSchemaLocation="findbugsplugin.xsd"
-          pluginid="edu.umd.cs.findbugs.plugins.core" 
+          pluginid="edu.umd.cs.findbugs.plugins.core"
           version="USE_FINDBUGS_VERSION"
           provider="FindBugs project" website="http://findbugs.sourceforge.net"
           update-url="http://update.findbugs.org/update-check">
-          
+
           <!--
   Plugin descriptor for FindBugs "core" plugin.
   This plugin is enabled by default.
@@ -12,7 +12,7 @@
           <Cloud id="edu.umd.cs.findbugs.cloud.doNothingCloud"
                     cloudClass="edu.umd.cs.findbugs.cloud.DoNothingCloud"
                     usernameClass="edu.umd.cs.findbugs.cloud.username.NoNameLookup"/>
-          
+
           <PluginComponent id="edu.umd.cs.findbugs.bugReporter.SuppressI18N"
                     componentKind="edu.umd.cs.findbugs.bugReporter.BugReporterDecorator"
                     componentClass="edu.umd.cs.findbugs.bugReporter.SuppressionDecorator"
@@ -44,7 +44,7 @@
                     disabled="true">
                     <Property key="category">MALICIOUS_CODE</Property>
           </PluginComponent>
-          
+
 
           <FindBugsMain cmd="addMessages" kind="poweruser" class="edu.umd.cs.findbugs.AddMessages"/>
           <FindBugsMain cmd="analyze" analysis="true" class="edu.umd.cs.findbugs.FindBugs2"/>
@@ -53,14 +53,14 @@
           <FindBugsMain cmd="help" class="edu.umd.cs.findbugs.ShowHelp"/>
           <FindBugsMain cmd="version" class="edu.umd.cs.findbugs.Version"/>
           <FindBugsMain cmd="filter" class="edu.umd.cs.findbugs.workflow.Filter"/>
-          <FindBugsMain cmd="set" class="edu.umd.cs.findbugs.workflow.SetBugDatabaseInfo"/> 
-          
+          <FindBugsMain cmd="set" class="edu.umd.cs.findbugs.workflow.SetBugDatabaseInfo"/>
+
           <FindBugsMain cmd="history" kind="history" class="edu.umd.cs.findbugs.workflow.MineBugHistory"/>
           <FindBugsMain cmd="union" kind="history" class="edu.umd.cs.findbugs.workflow.UnionResults"/>
           <FindBugsMain cmd="merge" kind="history" class="edu.umd.cs.findbugs.workflow.Update"/>
-                  
-          <FindBugsMain cmd="dis" kind="utility" class="edu.umd.cs.findbugs.workflow.PrintClass"/> 
-          
+
+          <FindBugsMain cmd="dis" kind="utility" class="edu.umd.cs.findbugs.workflow.PrintClass"/>
+
           <OrderingConstraints>
                     <SplitPass>
                               <Earlier class="edu.umd.cs.findbugs.detect.FieldItemSummary"/>
@@ -86,20 +86,24 @@
                               <Earlier class="edu.umd.cs.findbugs.detect.NoteSuppressedWarnings"/>
                               <LaterCategory name="reporting" spanplugins="true"/>
                     </SplitPass>
+                    <!--
                     <SplitPass>
                               <Earlier class="edu.umd.cs.findbugs.detect.OverridingEqualsNotSymmetrical"/>
                               <Later class="edu.umd.cs.findbugs.detect.FindHEmismatch"/>
                     </SplitPass>
+                     -->
                     <SplitPass>
                               <Earlier class="edu.umd.cs.findbugs.detect.FunctionsThatMightBeMistakenForProcedures"/>
                               <Later class="edu.umd.cs.findbugs.detect.MethodReturnCheck"/>
                     </SplitPass>
+                    <!--
                     <WithinPass>
                               <Earlier class="edu.umd.cs.findbugs.detect.FindBugsSummaryStats"/>
                               <Later
                                         class="edu.umd.cs.findbugs.detect.EqualsOperandShouldHaveClassCompatibleWithThis"
                               />
                     </WithinPass>
+
                     <WithinPass>
                               <Earlier class="edu.umd.cs.findbugs.detect.FindBugsSummaryStats"/>
                               <Later class="edu.umd.cs.findbugs.detect.OverridingEqualsNotSymmetrical" />
@@ -116,6 +120,7 @@
                                         class="edu.umd.cs.findbugs.detect.OverridingEqualsNotSymmetrical"
                               />
                     </WithinPass>
+                    -->
                     <SplitPass>
                               <Earlier class="edu.umd.cs.findbugs.detect.NoteSuppressedWarnings"/>
                               <Later
@@ -266,7 +271,8 @@
                               <Later class="edu.umd.cs.findbugs.detect.CheckExpectedWarnings"/>
                     </SplitPass>
           </OrderingConstraints>
-      <!--    <Detector class="edu.umd.cs.findbugs.detect.FunctionsThatMightBeMistakenForProcedures" speed="fast"
+          <!--
+          <Detector class="edu.umd.cs.findbugs.detect.FunctionsThatMightBeMistakenForProcedures" speed="fast"
                     reports="" hidden="true"/>
           <Detector class="edu.umd.cs.findbugs.detect.NoteSuppressedWarnings" speed="fast"
                     reports="" hidden="true"/>
@@ -352,12 +358,16 @@
                     reports="VR_UNRESOLVABLE_REFERENCE" disabled="true" hidden="true"/>
           <Detector class="edu.umd.cs.findbugs.detect.CheckImmutableAnnotation" speed="fast"
                     reports="JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS"/>
+          -->
           <Detector class="edu.umd.cs.findbugs.detect.DontCatchIllegalMonitorStateException"
                     speed="fast" reports="IMSE_DONT_CATCH_IMSE"/>
+          <!--
           <Detector class="edu.umd.cs.findbugs.detect.FindFloatMath" speed="moderate"
                     disabled="true" hidden="true" reports="FL_MATH_USING_FLOAT_PRECISION"/>
+          -->
           <Detector class="edu.umd.cs.findbugs.detect.CloneIdiom" speed="fast"
                     reports="CN_IDIOM,CN_IDIOM_NO_SUPER_CALL,CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+          <!--
           <Detector class="edu.umd.cs.findbugs.detect.ComparatorIdiom" speed="fast"
                     reports="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
           <Detector class="edu.umd.cs.findbugs.detect.FindFieldSelfAssignment" speed="fast"
@@ -375,19 +385,27 @@
                     reports="DMI_EMPTY_DB_PASSWORD,DMI_CONSTANT_DB_PASSWORD,DMI_USELESS_SUBSTRING,DMI_HARDCODED_ABSOLUTE_FILENAME"/>
           <Detector class="edu.umd.cs.findbugs.detect.URLProblems" speed="fast"
                     reports="DMI_BLOCKING_METHODS_ON_URL,DMI_COLLECTION_OF_URLS"/>
+          -->
           <Detector class="edu.umd.cs.findbugs.detect.DumbMethods" speed="fast"
                     reports="NP_IMMEDIATE_DEREFERENCE_OF_READLINE,RV_01_TO_INT,DM_RUN_FINALIZERS_ON_EXIT,DM_STRING_CTOR,DM_STRING_VOID_CTOR,DM_STRING_TOSTRING,DM_GC,DM_BOOLEAN_CTOR,DM_EXIT,DM_CONVERT_CASE,SW_SWING_METHODS_INVOKED_IN_SWING_THREAD,DM_BOXED_PRIMITIVE_TOSTRING,DM_NEW_FOR_GETCLASS,DM_NEXTINT_VIA_NEXTDOUBLE,DM_USELESS_THREAD,DM_MONITOR_WAIT_ON_CONDITION,DMI_CALLING_NEXT_FROM_HASNEXT,RV_REM_OF_HASHCODE,RV_REM_OF_RANDOM_INT,RV_ABSOLUTE_VALUE_OF_RANDOM_INT,RV_ABSOLUTE_VALUE_OF_HASHCODE,BIT_ADD_OF_SIGNED_BYTE,BIT_IOR_OF_SIGNED_BYTE,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,INT_BAD_COMPARISON_WITH_SIGNED_BYTE,INT_BAD_REM_BY_1,DMI_ANNOTATION_IS_NOT_VISIBLE_TO_REFLECTION,INT_VACUOUS_COMPARISON,BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS,DMI_RANDOM_USED_ONLY_ONCE,DMI_LONG_BITS_TO_DOUBLE_INVOKED_ON_INT,DMI_THREAD_PASSED_WHERE_RUNNABLE_EXPECTED,DMI_FUTILE_ATTEMPT_TO_CHANGE_MAXPOOL_SIZE_OF_SCHEDULED_THREAD_POOL_EXECUTOR,DMI_SCHEDULED_THREAD_POOL_EXECUTOR_WITH_ZERO_CORE_THREADS,DMI_VACUOUS_CALL_TO_EASYMOCK_METHOD,DMI_BIGDECIMAL_CONSTRUCTED_FROM_DOUBLE,INT_VACUOUS_BIT_OPERATION,DMI_COLLECTION_OF_URLS,INT_BAD_COMPARISON_WITH_INT_VALUE,DMI_DOH,DMI_ARGUMENTS_WRONG_ORDER"/>
+          <!--
           <Detector class="edu.umd.cs.findbugs.detect.NumberConstructor" speed="fast"
                     disabled="false" reports="DM_NUMBER_CTOR,DM_FP_NUMBER_CTOR"/>
           <Detector class="edu.umd.cs.findbugs.detect.FindSqlInjection" speed="moderate"
                     reports="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING"
                     disabled="false"/>
           <Detector class="edu.umd.cs.findbugs.detect.FindDoubleCheck" speed="fast"
-                    reports="DC_DOUBLECHECK"/>-->
+                    reports="DC_DOUBLECHECK"/>
+          -->
           <Detector class="edu.umd.cs.findbugs.detect.FindFinalizeInvocations" speed="fast"
                     reports="FI_PUBLIC_SHOULD_BE_PROTECTED,FI_EMPTY,FI_NULLIFY_SUPER,FI_USELESS,FI_MISSING_SUPER_CALL,FI_EXPLICIT_INVOCATION"/>
-       <!--   <Detector class="edu.umd.cs.findbugs.detect.FindHEmismatch" speed="fast"
+          <!--
+          REPLACED <Detector class="edu.umd.cs.findbugs.detect.FindHEmismatch" speed="fast"
                     reports="EQ_DONT_DEFINE_EQUALS_FOR_ENUM,EQ_SELF_USE_OBJECT,EQ_SELF_NO_OBJECT,CO_SELF_NO_OBJECT,HE_HASHCODE_USE_OBJECT_EQUALS,HE_HASHCODE_NO_EQUALS,HE_EQUALS_USE_HASHCODE,HE_EQUALS_NO_HASHCODE,HE_INHERITS_EQUALS_USE_HASHCODE,CO_ABSTRACT_SELF,EQ_ABSTRACT_SELF,HE_SIGNATURE_DECLARES_HASHING_OF_UNHASHABLE_CLASS,HE_USE_OF_UNHASHABLE_CLASS,EQ_COMPARETO_USE_OBJECT_EQUALS,EQ_DOESNT_OVERRIDE_EQUALS,EQ_OTHER_USE_OBJECT,EQ_OTHER_NO_OBJECT"/>
+          -->
+          <Detector class="edu.umd.cs.findbugs.detect.FindHEmismatch" speed="fast"
+                    reports="EQ_ABSTRACT_SELF"/>
+          <!--
           <Detector class="edu.umd.cs.findbugs.detect.OverridingEqualsNotSymmetrical" speed="fast"
                     reports="EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC,EQ_ALWAYS_TRUE,EQ_ALWAYS_FALSE,EQ_COMPARING_CLASS_NAMES,EQ_UNUSUAL,EQ_GETCLASS_AND_CLASS_CONSTANT"/>
           <Detector class="edu.umd.cs.findbugs.detect.FindNakedNotify" speed="fast"
@@ -428,16 +446,21 @@
                     reports="NM_WRONG_PACKAGE,NM_WRONG_PACKAGE_INTENTIONAL,NM_VERY_CONFUSING,NM_VERY_CONFUSING_INTENTIONAL,NM_CONFUSING,NM_METHOD_CONSTRUCTOR_CONFUSION,NM_LCASE_HASHCODE,NM_LCASE_TOSTRING,NM_BAD_EQUAL,NM_CLASS_NAMING_CONVENTION,NM_FIELD_NAMING_CONVENTION,NM_METHOD_NAMING_CONVENTION,NM_CLASS_NOT_EXCEPTION,NM_SAME_SIMPLE_NAME_AS_SUPERCLASS,NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
           <Detector class="edu.umd.cs.findbugs.detect.ReadReturnShouldBeChecked" speed="fast"
                     reports="RR_NOT_CHECKED,SR_NOT_CHECKED"/>
+          -->
           <Detector class="edu.umd.cs.findbugs.detect.SerializableIdiom" speed="fast"
                     reports="SE_NO_SERIALVERSIONID,SE_METHOD_MUST_BE_PRIVATE,WS_WRITEOBJECT_SYNC,RS_READOBJECT_SYNC,SE_INNER_CLASS,SE_BAD_FIELD,SE_BAD_FIELD_STORE,SE_NONLONG_SERIALVERSIONID,SE_NONSTATIC_SERIALVERSIONID,SE_NONFINAL_SERIALVERSIONID,SE_NO_SUITABLE_CONSTRUCTOR,SE_NO_SUITABLE_CONSTRUCTOR_FOR_EXTERNALIZATION,SE_READ_RESOLVE_MUST_RETURN_OBJECT,SE_TRANSIENT_FIELD_NOT_RESTORED,SE_TRANSIENT_FIELD_OF_NONSERIALIZABLE_CLASS,SE_BAD_FIELD_INNER_CLASS,SE_READ_RESOLVE_IS_STATIC,SE_PRIVATE_READ_RESOLVE_NOT_INHERITED"/>
+          <!--
           <Detector class="edu.umd.cs.findbugs.detect.StartInConstructor" speed="fast"
                     reports="SC_START_IN_CTOR"/>
           <Detector class="edu.umd.cs.findbugs.detect.FindBadForLoop" speed="fast"
                     reports="QF_QUESTIONABLE_FOR_LOOP"/>
           <Detector class="edu.umd.cs.findbugs.detect.ExplicitSerialization" speed="fast"
-        reports=""/>
+                    reports=""/>
+          -->
           <Detector class="edu.umd.cs.findbugs.detect.UnreadFields" speed="fast"
                     reports="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD,NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD,NP_UNWRITTEN_FIELD,UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR,UWF_NULL_FIELD,UWF_UNWRITTEN_FIELD,SS_SHOULD_BE_STATIC,UUF_UNUSED_FIELD,URF_UNREAD_FIELD,SIC_INNER_SHOULD_BE_STATIC,SIC_INNER_SHOULD_BE_STATIC_ANON,SIC_INNER_SHOULD_BE_STATIC_NEEDS_THIS,SIC_THREADLOCAL_DEADLY_EMBRACE,UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD,UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD,URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+
+          <!--
           <Detector class="edu.umd.cs.findbugs.detect.WaitInLoop" speed="fast"
                     reports="WA_NOT_IN_LOOP,WA_AWAIT_NOT_IN_LOOP,NO_NOTIFY_NOT_NOTIFYALL"/>
           <Detector class="edu.umd.cs.findbugs.detect.FindNullDeref" speed="slow"
@@ -519,7 +542,7 @@
           <Detector class="edu.umd.cs.findbugs.detect.IDivResultCastToDouble" speed="fast"
                     reports="ICAST_IDIV_CAST_TO_DOUBLE,ICAST_INT_CAST_TO_DOUBLE_PASSED_TO_CEIL,ICAST_INT_CAST_TO_FLOAT_PASSED_TO_ROUND"/>
           <Detector class="edu.umd.cs.findbugs.detect.FindBadCast2" speed="fast"
-                    reports="BC_BAD_CAST_TO_CONCRETE_COLLECTION,BC_BAD_CAST_TO_ABSTRACT_COLLECTION,BC_UNCONFIRMED_CAST,BC_IMPOSSIBLE_CAST,BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,NP_NULL_INSTANCEOF,BC_IMPOSSIBLE_DOWNCAST,BC_IMPOSSIBLE_DOWNCAST_OF_TOARRAY" /> 
+                    reports="BC_BAD_CAST_TO_CONCRETE_COLLECTION,BC_BAD_CAST_TO_ABSTRACT_COLLECTION,BC_UNCONFIRMED_CAST,BC_IMPOSSIBLE_CAST,BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,NP_NULL_INSTANCEOF,BC_IMPOSSIBLE_DOWNCAST,BC_IMPOSSIBLE_DOWNCAST_OF_TOARRAY" />
 
           <Detector class="edu.umd.cs.findbugs.detect.FindUseOfNonSerializableValue"
                     speed="fast" reports="J2EE_STORE_OF_NON_SERIALIZABLE_OBJECT_INTO_SESSION,DMI_NONSERIALIZABLE_OBJECT_WRITTEN"/>
@@ -550,8 +573,10 @@
           <Detector class="edu.umd.cs.findbugs.detect.UselessSubclassMethod" speed="fast"
                     disabled="true"
                     reports="USM_USELESS_SUBCLASS_METHOD,USM_USELESS_ABSTRACT_METHOD"/>
+          -->
           <Detector class="edu.umd.cs.findbugs.detect.ConfusedInheritance" speed="fast"
                     reports="CI_CONFUSED_INHERITANCE"/>
+          <!--
           <Detector class="edu.umd.cs.findbugs.detect.QuestionableBooleanAssignment" speed="fast"
                     reports="QBA_QUESTIONABLE_BOOLEAN_ASSIGNMENT"/>
           <Detector class="edu.umd.cs.findbugs.detect.TrainUnconditionalDerefParams" hidden="true"
@@ -596,7 +621,7 @@
 -->
             <!-- Bug Categories -->
            <BugCategory category="NOISE" hidden="true"/>
-         
+
           <!-- Bug Codes -->
           <BugCode abbrev="USELESS_STRING"/>
           <BugCode abbrev="DMI" cweid="440"/>
@@ -736,7 +761,7 @@
                     category="SECURITY" cweid="89"/>
           <BugPattern abbrev="DC" type="DC_DOUBLECHECK" category="MT_CORRECTNESS" cweid="609"/>
           <BugPattern abbrev="FI" type="FI_PUBLIC_SHOULD_BE_PROTECTED" category="MALICIOUS_CODE"
-                    cweid="583"/> 
+                    cweid="583"/>
           <BugPattern abbrev="FI" type="FI_EMPTY" category="BAD_PRACTICE"/>
           <BugPattern abbrev="FI" type="FI_NULLIFY_SUPER" category="BAD_PRACTICE"/>
           <BugPattern abbrev="FI" type="FI_USELESS" category="BAD_PRACTICE"/>

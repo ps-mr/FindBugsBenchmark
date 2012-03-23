@@ -57,7 +57,7 @@ public class ProjectFilterSettings implements Cloneable {
     public static final String EXPERIMENTAL_PRIORITY = "Experimental";
 
     /** Default warning threshold priority. */
-    public static final String DEFAULT_PRIORITY = MEDIUM_PRIORITY;
+    public static final String DEFAULT_PRIORITY = LOW_PRIORITY;
 
     /** Map of priority level names to their numeric values. */
     private static Map<String, Integer> priorityNameToValueMap = new HashMap<String, Integer>();
