@@ -1304,8 +1304,8 @@ public class FindBugs2 implements IFindBugsEngine {
 				+ " using detector " + detector.getDetectorClassName(), e);
 	}
 
-	public static void main(String[] args) throws Exception {
-		System.err.println("Adapted by M.Eichberg");
+	public static void main2(String[] args) throws Exception {
+		System.err.println("Adapted by M. Eichberg and P. Giarrusso");
 		// Sanity-check the loaded BCEL classes
 		long startTime = System.nanoTime();
 		if (!CheckBcel.check()) {
@@ -1330,6 +1330,10 @@ public class FindBugs2 implements IFindBugsEngine {
 		System.err.println("Setup time: "+(endTime-startTime)/1000.0/1000.0/1000.0 );
 
 		FindBugs.runMain(findBugs, commandLine);
+	}
+	public static void main(String[] args) throws Exception {
+		main2(args);
+		main2(args);
 	}
 
 	public void setAbridgedMessages(boolean xmlWithAbridgedMessages) {
