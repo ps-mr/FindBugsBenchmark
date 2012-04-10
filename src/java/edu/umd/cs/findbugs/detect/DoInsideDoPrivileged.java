@@ -21,6 +21,7 @@ package edu.umd.cs.findbugs.detect;
 
 import org.apache.bcel.classfile.Code;
 import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Method;
 
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
@@ -48,13 +49,19 @@ public class DoInsideDoPrivileged extends BytecodeScanningDetector {
                 || Subtypes2.instanceOf(getDottedClassName(), "java.security.PrivilegedExceptionAction");
     }
 
+    // Required elsewhere
+    public static boolean isTestMethod(Method method) {
+        return method.getName().startsWith("test");
+    }
+
+
     @Override
     public void visit(Code obj) {
         if (isDoPrivileged && getMethodName().equals("run"))
             return;
         if (getMethod().isPrivate())
             return;
-        if (DumbMethods.isTestMethod(getMethod()))
+        if (isTestMethod(getMethod()))
             return;
         super.visit(obj);
         bugAccumulator.reportAccumulatedBugs();
