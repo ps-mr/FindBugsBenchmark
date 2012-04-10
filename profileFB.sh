@@ -1,1 +1,1 @@
-time ./bin/fb -jvmArgs -Xcomp -Dprofiler.report=true analyze "$@"
+time ./bin/fb -Dprofiler.report=true analyze "$@"
