@@ -1333,7 +1333,6 @@ public class FindBugs2 implements IFindBugsEngine {
 	}
 	public static void main(String[] args) throws Exception {
 		main2(args);
-		main2(args);
 	}
 
 	public void setAbridgedMessages(boolean xmlWithAbridgedMessages) {
