@@ -35,9 +35,8 @@ public class DumbMethods extends OpcodeStackDetector {
 
 	@Override
 	public void sawOpcode(int seen) {
-		if (seen == INVOKESTATIC && getClassConstantOperand().equals("java/lang/System")
-				&& getNameConstantOperand().equals("runFinalizersOnExit") || seen == INVOKEVIRTUAL
-				&& getClassConstantOperand().equals("java/lang/Runtime")
+		if (seen == INVOKESTATIC && (getClassConstantOperand().equals("java/lang/System")
+				|| getClassConstantOperand().equals("java/lang/Runtime"))
 				&& getNameConstantOperand().equals("runFinalizersOnExit")) {
 			bugReporter.reportBug(new BugInstance(this, "DM_RUN_FINALIZERS_ON_EXIT", HIGH_PRIORITY)
 					.addClassAndMethod(this).addSourceLine(this));
