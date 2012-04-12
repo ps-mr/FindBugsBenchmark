@@ -35,7 +35,6 @@ public class DumbMethods extends OpcodeStackDetector {
 
 	@Override
 	public void sawOpcode(int seen) {
-
 		if (seen == INVOKESTATIC && getClassConstantOperand().equals("java/lang/System")
 				&& getNameConstantOperand().equals("runFinalizersOnExit") || seen == INVOKEVIRTUAL
 				&& getClassConstantOperand().equals("java/lang/Runtime")
@@ -47,9 +46,7 @@ public class DumbMethods extends OpcodeStackDetector {
 		if (((seen == INVOKESTATIC && getClassConstantOperand().equals("java/lang/System")) || (seen == INVOKEVIRTUAL && getClassConstantOperand()
 				.equals("java/lang/Runtime")))
 				&& getNameConstantOperand().equals("gc")
-				&& getSigConstantOperand().equals("()V")
-				&& !getDottedClassName().startsWith("java.lang")
-				&& !getMethodName().startsWith("gc") && !getMethodName().endsWith("gc")) {
+				&& getSigConstantOperand().equals("()V")) {
 			bugReporter.reportBug(new BugInstance(this, "DM_GC", HIGH_PRIORITY).addClassAndMethod(
 					this).addSourceLine(this));
 		}
