@@ -1,1 +1,1 @@
-time ./bin/fb -Dprofiler.report=true analyze "$@"
+$(which time) -f '%e;%U;%S' ./bin/fb -Dprofiler.report=true analyze "$@"
