@@ -31,8 +31,8 @@ public class FB {
 	public static void main(String args[]) throws Throwable {
 
 		main2(args);
-		DetectorFactoryCollection.resetInstance(null);
-		main2(args);
+		//DetectorFactoryCollection.resetInstance(null);
+		//main2(args);
 	}
 
 	private static void main2(String args[]) throws Throwable {
