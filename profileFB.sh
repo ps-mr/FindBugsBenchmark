@@ -1,1 +1,2 @@
-$(which time) -f '%e;%U;%S' ./bin/fb -Dprofiler.report=true analyze "$@"
+gitV="git describe --always --dirty"
+$(which time) -f "$gitV;%e;%U;%S;%P" ./bin/fb -Dprofiler.report=true analyze "$@"
