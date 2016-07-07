@@ -1330,6 +1330,7 @@ public class FindBugs2 implements IFindBugsEngine {
 		System.err.println("Setup time: "+(endTime-startTime)/1000.0/1000.0/1000.0 );
 
 		FindBugs.runMain(findBugs, commandLine);
+		findBugs.dispose();
 	}
 	public static void main(String[] args) throws Exception {
 		main2(args);

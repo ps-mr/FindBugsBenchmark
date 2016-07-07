@@ -53,6 +53,9 @@ public class PrintingBugReporter extends TextUIBugReporter {
         if (seenAlready.add(bugInstance)) {
             printBug(bugInstance);
             notifyObservers(bugInstance);
+        } else {
+            outputStream.println("Dup BUG!");
+            printBug(bugInstance);
         }
     }
 
